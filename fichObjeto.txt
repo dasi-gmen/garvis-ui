@@ -1,0 +1,7 @@
+apila true
+desapila-dir 0
+apila 2
+apila 5
+suma
+desapila-dir 1
+stop

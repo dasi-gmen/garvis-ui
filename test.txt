@@ -1,0 +1,10 @@
+program : miPrograma {
+@comienzo del cuerpo del programa
+vars-consts{
+	const boolean x := true;
+	var natural y;
+	}
+	instructions{	
+	y = 2 + 5;
+	}
+}
