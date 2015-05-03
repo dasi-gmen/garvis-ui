@@ -1,4 +1,4 @@
-package Interfaz;
+package garvisUserChat;
 
 import java.awt.BorderLayout;
 import java.awt.Event;
@@ -6,7 +6,10 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -32,15 +35,18 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.Element;
 
-public class Interfaz extends JFrame {
+public class GarvisUserChat extends JFrame {
 	
-	JTextArea areaCodigo =new JTextArea("");	
+	
+	String userName = "pacopa";
+	Integer numLineas = 0;
+	JTextArea areaLenguajeP =new JTextArea("");	
 	JLabel lineaColumnaAreaCodigo = new JLabel("Posición del puntero :  (0,0)");
 	JLabel labelToken = new JLabel("G-ARVIS, EL SISTEMA INTELIGENTE PARA TU CASA");	
-	JTextArea areaIn = new JTextArea("Aquí se escriben las entradas",2,5);	
+	JTextArea areaIn;
 	private static final long serialVersionUID = 1L;
 
-	public Interfaz() {
+	public GarvisUserChat() {
 		inicializarInterfaz();  
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -80,8 +86,8 @@ public class Interfaz extends JFrame {
 		BorderLayout bl = new BorderLayout();
 		lenguajePPanel.setLayout(bl);		
 		
-		JTextArea areaLenguajeP = new JTextArea("Aquí se muestran el historial del chat");		
-		areaLenguajeP.enable(true);
+		areaLenguajeP = new JTextArea();//"Aquí se muestran el historial del chat");		
+		areaLenguajeP.setEditable(false);//setEnabled(false);//  enable(true);
 		areaLenguajeP.setFont(new Font("Arial", Font.BOLD,15));
 		JScrollPane scroll = new JScrollPane( areaLenguajeP );
 		
@@ -101,12 +107,13 @@ public class Interfaz extends JFrame {
 		//panelBotones.setSize(5, 5);
 		
 		
-		final JButton enviarButton = new JButton("Enviar");			
+		final JButton enviarButton = new JButton("Envia2r");			
 			panelBotones.add(enviarButton);						
 		areaInferior.add("Center", construyeAreaIn());
 		areaInferior.add("East", construyeBoton());
 		
 		return  areaInferior;
+//		return null;
 	}
 
 	
@@ -133,9 +140,30 @@ public class Interfaz extends JFrame {
 		BorderLayout bl = new BorderLayout();
 		outPPanel.setBorder(new TitledBorder("Entrada:"));
 		outPPanel.setLayout(bl);		
-	
+		areaIn = new JTextArea();//("Aquí se escriben las entradas",2,5);
 		
 		areaIn.setFont(new Font("Calibri", Font.PLAIN, 15));
+		
+		areaIn.addKeyListener(new KeyListener() {
+			
+			public void keyTyped(KeyEvent arg0) {
+				if (arg0.getKeyChar()=='\n'){
+					if(areaIn.getText().length()!=0){
+						String userInput = areaIn.getText().substring(0,(areaIn.getText().length())-1);
+						areaLenguajeP.append(userName+":  "+userInput+"\n");
+						areaIn.setText("");
+						numLineas++;
+					}
+				}
+			}
+			
+			public void keyReleased(KeyEvent arg0) {}
+			
+			public void keyPressed(KeyEvent arg0) {
+
+			}
+		});
+		
 		JScrollPane scroll = new JScrollPane( areaIn );
 				
 		outPPanel.add("Center", scroll);
@@ -154,6 +182,14 @@ public class Interfaz extends JFrame {
 	
 		
 		JButton btnEnviar = new JButton("ENVIAR");
+		btnEnviar.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){
+			if(areaIn.getText().length()!=0){
+				String userInput = areaIn.getText();
+				areaLenguajeP.append("\n"+userName+":  "+userInput);
+				areaIn.setText(null);
+				numLineas++;
+			}
+		}});
 		
 		outPPanel.add("Center", btnEnviar);
 		
@@ -161,7 +197,7 @@ public class Interfaz extends JFrame {
 	}	
 
 		
-	void leerLineasTextArea(){
+	/*void leerLineasTextArea(){
 		String text = areaCodigo.getText() ;
 		StringTokenizer st = new StringTokenizer(text,"\n") ;
 		while (st.hasMoreTokens()) {
@@ -173,7 +209,7 @@ public class Interfaz extends JFrame {
 		    	 
 		     }
 		}
-	}
+	}*/
 	
 		
 	JMenuItem getSalirItem() {
@@ -194,7 +230,7 @@ public class Interfaz extends JFrame {
 
 	
 	// Clase para el contador linea/columna
-	class CaretList implements CaretListener {
+	/*class CaretList implements CaretListener {
         
         public CaretList(JTextArea textoEntrada)
         {
@@ -211,14 +247,14 @@ public class Interfaz extends JFrame {
             lineaColumnaAreaCodigo.setText("Posición del puntero :  ("+Integer.toString(linea)+","+String.valueOf(columna)+")");       
            
         }       
-    }
+    }*/
 	
 	
 	
 	
 	public static void main(String[] args) {
 		
-		Interfaz interfaz = new Interfaz();
+		GarvisUserChat interfaz = new GarvisUserChat();
 		
 		interfaz.setVisible(true);
 		interfaz.setEnabled(true);
@@ -226,6 +262,12 @@ public class Interfaz extends JFrame {
 		interfaz.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	
 		
+	}
+	
+	
+	public void messageIn(String messageGarvis){
+		areaLenguajeP.append("\n"+"Garvis:  "+messageGarvis);
+		numLineas++;
 	}
 
 }
